@@ -1,0 +1,20 @@
+{
+  "name": "InfraRPG",
+  "short_name": "InfraRPG",
+  "description": "RPG do Concurseiro – Questões de Economia para Concursos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "games"],
+  "lang": "pt-BR"
+}
