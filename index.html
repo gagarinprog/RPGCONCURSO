@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="InfraRPG – Prepare-se para concursos de economia em formato RPG" />
+  <title>InfraRPG – RPG do Concurseiro</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a0e1a" />
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div id="app">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <span class="navbar-brand" id="btn-brand">
+      <span class="icon">⚔️</span>
+      <span>InfraRPG</span>
+    </span>
+    <span class="navbar-version">v2.0.0</span>
+  </nav>
+
+  <!-- ── Tela 1: Seleção de Matéria ── -->
+  <section id="subject-screen" class="screen">
+    <h1>Escolha sua Batalha</h1>
+    <p class="subtitle">Selecione uma matéria do edital para iniciar sua campanha</p>
+    <div id="subject-grid" class="subject-grid"></div>
+  </section>
+
+  <!-- ── Tela 2: Seleção de Tópico ── -->
+  <section id="topic-screen" class="screen hidden">
+    <button class="btn-back" id="btn-topic-back">← Voltar</button>
+    <h2 id="subject-title">Matéria</h2>
+    <div id="topic-list" class="topic-list"></div>
+  </section>
+
+  <!-- ── Tela 3: Jogo ── -->
+  <section id="game-screen" class="screen hidden">
+    <!-- Cabeçalho da fase -->
+    <div class="game-header">
+      <div class="game-meta">
+        <span id="topic-title"></span>
+        <span id="phase-title">Fase 1</span>
+      </div>
+      <div class="hp-container">
+        <div class="hp-label-row">
+          <span>❤️ HP</span>
+          <span id="hp-label">100/100</span>
+        </div>
+        <div class="hp-track"><div id="hp-bar" class="hp-fill" style="width:100%"></div></div>
+      </div>
+      <div class="phase-container">
+        <div class="hp-label-row">
+          <span>🎯 Fase</span>
+          <span id="phase-label">0/5 corretas</span>
+        </div>
+        <div class="phase-track"><div id="phase-bar" class="phase-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Card da Questão -->
+    <div id="q-card">
+      <p id="q-text">Carregando...</p>
+    </div>
+
+    <!-- Botões de Resposta -->
+    <div id="ans-btns" style="display:none">
+      <button id="btn-true"  class="btn-answer btn-true">✓ CERTO</button>
+      <button id="btn-false" class="btn-answer btn-false">✗ ERRADO</button>
+    </div>
+  </section>
+</div>
+
+<!-- ── Modal: Resultado ── -->
+<div id="result-modal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div id="result-icon" class="modal-icon"></div>
+    <h2 id="result-title" class="modal-title"></h2>
+    <div id="result-explanation" class="modal-explanation"></div>
+    <p id="result-reference" class="modal-reference"></p>
+    <div class="modal-actions">
+      <button id="btn-continue" class="btn-primary">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Fase Concluída ── -->
+<div id="phase-modal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-box" style="text-align:center">
+    <div class="modal-icon float">🏆</div>
+    <h2 class="modal-title neutral">Fase <span id="phase-complete-num"></span> Concluída!</h2>
+    <p style="color:var(--text-muted);margin-bottom:1rem">
+      Avançando para a Fase <strong id="next-phase-num"></strong>...
+    </p>
+    <div class="modal-actions">
+      <button id="btn-next-phase" class="btn-primary">Próxima Fase →</button>
+      <button id="btn-back-subjects" class="btn-secondary">Menu Principal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Tópico Completo ── -->
+<div id="complete-modal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-box" style="text-align:center">
+    <div class="modal-icon float">🎖️</div>
+    <h2 class="modal-title" style="color:var(--accent-amber)">Tópico Dominado!</h2>
+    <p style="color:var(--text-muted);margin-bottom:1.2rem">
+      Você completou <strong id="complete-topic-name"></strong>.<br />
+      Continue estudando para dominar todos os tópicos!
+    </p>
+    <div class="modal-actions">
+      <button id="btn-complete-back" class="btn-primary">Ver Tópicos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Game Over ── -->
+<div id="gameover-modal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-box" style="text-align:center">
+    <div class="modal-icon">💀</div>
+    <h2 class="modal-title wrong">Derrota!</h2>
+    <p style="color:var(--text-muted);margin-bottom:1rem">
+      Seu HP chegou a zero. Estude a explicação e tente novamente.
+    </p>
+    <div class="modal-actions">
+      <button id="btn-retry" class="btn-danger">🔄 Tentar Novamente</button>
+      <button id="btn-back-topics" class="btn-secondary">← Voltar aos Tópicos</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- Scripts -->
+<script src="data/database.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js" type="module"></script>
+
+<script>
+  // Navbar brand → menu principal
+  document.getElementById('btn-brand').addEventListener('click', () => {
+    if (typeof closeAllModals === 'function') closeAllModals();
+    if (typeof showScreen === 'function') showScreen('subject-screen');
+  });
+
+  // Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>

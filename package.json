@@ -1,0 +1,15 @@
+{
+  "name": "infra-rpg",
+  "version": "2.0.0",
+  "description": "InfraRPG – RPG do Concurseiro com integração Supabase",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "import": "node scripts/import-to-supabase.js",
+    "deploy": "npx netlify-cli deploy --prod --dir ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
